@@ -160,8 +160,10 @@ export const AuthModal = ({
           cpass: modalData.cpass,
         })
       );
-
-      router.push("/home");}
+      setTimeout(()=>{
+        router.push("/home");
+      }, 500)
+      }
       createAcc()
     }
   }, [registration, router, modalData, addDoc])

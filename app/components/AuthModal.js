@@ -138,7 +138,7 @@ export const AuthModal = ({
   useEffect(()=>{
   
     if (typeof window !== 'undefined') {
-      if(window.location.href == 'https://file-app-coral.vercel.app/'){
+      if(window.location.pathname === '/'){
         setVisible('')
       }else{
 

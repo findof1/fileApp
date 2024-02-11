@@ -8,7 +8,6 @@ import { getDownloadURL, ref } from 'firebase/storage'
 import { FaThumbsUp } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import Button from './Button'
-import { useRouter } from 'next/navigation'
 
 const File = ({file, userdata}) => {
   const searchParams = useSearchParams()
@@ -17,9 +16,6 @@ const File = ({file, userdata}) => {
   const [url, setUrl] = useState('')
   const [liked, setLiked] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
-
-  const router = useRouter()
-
 
   const getFileData = useCallback(async () =>{
     const q = query(

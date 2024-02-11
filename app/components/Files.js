@@ -102,7 +102,7 @@ const Files = () => {
     }).catch((error) => {
       console.error('Error downloading file data:', error);
     });
-  });
+  },[searchText, lastVisible, firstVisible, setPage, setFiles, setFirstVisible, setEnd, setLastVisible, setEndVisible, end, page]);
 
 
 
@@ -122,8 +122,8 @@ const Files = () => {
     <TextInput label='Search: ' value={searchText} onEnter={()=>{fetchData()}} onChange={(e)=>{setSearchText(e.target.value)}} style='sm' extraStyles='text-white text-2xl absolute top-[1.5%] left-[20%]'></TextInput>
     <div className='h-full ml-[7%] w-[90%] grid grid-cols-4 grid-rows-3'>
     
-      {files?.map(file => (
-        <div className='bg-gray-700 border-4 border-black w-[70%] h-[90%] text-white pt-2 pl-2 relative'>
+      {files?.map((file, index) => (
+        <div key={index} className='bg-gray-700 border-4 border-black w-[70%] h-[90%] text-white pt-2 pl-2 relative'>
           <Link href={`/home/${file.name}?id=${file.filename}`} className='text-[8px] sm:text-sm md:text:md lg:text-xl overflow-clip text-wrap'>{file.name.length < 15 ? file.name : file.name.slice(0,15) + '...'}</Link>
           <p className='text-[6px] sm:text-[8px] md:text-[12px] lg:text-[14px] overflow-clip text-wrap'>{file.description.length < 25 ? file.description : file.description.slice(0,25)+ '...'}</p>
           <p className='mt-auto'>By: {file.user}</p>

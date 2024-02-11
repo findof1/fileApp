@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { db } from '../firebase-config'
 import { storage } from '../firebase-config'
@@ -17,11 +17,11 @@ const File = ({file, userdata}) => {
   const [url, setUrl] = useState('')
   const [liked, setLiked] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
-  const [oldRef, setOldRef] = useState()
+
   const router = useRouter()
 
 
-  const getFileData = async () =>{
+  const getFileData = useCallback(async () =>{
     const q = query(
       collection(db, 'files'),
       where("name", "==", decodeURIComponent(file)),
@@ -30,14 +30,13 @@ const File = ({file, userdata}) => {
 
     const fileSnapshot = await getDocs(q);
     const fileDoc = fileSnapshot.docs[0].data();
-    setOldRef(fileDoc.ref)
     const fileRef = ref(storage, `files/${fileDoc.filename}`);
     const fileURL = await getDownloadURL(fileRef);
     const response = await fetch(fileURL);
     const blob = await response.blob();
     fileDoc.fileData = blob;
     setFileData(fileDoc)
-  }
+  }, [file, filename, setFileData]);
 
   useEffect(()=>{
     getFileData()
@@ -54,11 +53,11 @@ const File = ({file, userdata}) => {
     }
   }, [fileData, getLikeData, setUrl, setDataLoaded])
 
-  const getLikeData = () => {
+  const getLikeData = useCallback(() => {
     if(fileData.likes.includes(userdata.username)){
       setLiked(true)
     }
-  }
+  }, [setLiked, userdata, fileData]);
 
 
   const like = async () => {

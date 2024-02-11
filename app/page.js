@@ -17,7 +17,7 @@ export default function Home() {
       <div className="absolute h-[100%] z-10">
         <h1 className="text-7xl text-left mt-36 ml-20 underline">File Share</h1>
         <p className="text-3xl text-left mt-16 ml-24">
-          This weabsite is a place  <br></br><br></br> where you can upload your files  <br></br><br></br> to share with others, or you can search <br></br><br></br> other peoples files for yourself.
+          This website is a place  <br></br><br></br> where you can upload your files  <br></br><br></br> to share with others, or you can search <br></br><br></br> other peoples files for yourself.
         </p>
       </div>
     </div>

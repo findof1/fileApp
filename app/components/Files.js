@@ -1,6 +1,6 @@
 'use client'
 import { getDocs, collection, query, orderBy, limit, startAfter, endBefore, limitToLast, endAt, where } from 'firebase/firestore'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { db } from '../firebase-config'
 import { storage } from "../firebase-config"
 import { ref, getDownloadURL } from 'firebase/storage';
@@ -19,7 +19,7 @@ const Files = () => {
   const [end, setEnd] = useState(false)
   const [page, setPage] = useState(1)
 
-  const fetchData = async (direction) => {
+  const fetchData = useCallback(async (direction) => {
     let q;
 
     if (direction === 'forward') {
@@ -102,7 +102,7 @@ const Files = () => {
     }).catch((error) => {
       console.error('Error downloading file data:', error);
     });
-  };
+  });
 
 
 

@@ -24,6 +24,7 @@ export const AuthModal = ({
   const router = useRouter();
   const [errMsg, setErrMsg] = useState("");
   const [visible, setVisible] = useState('')
+  const [created, setCreated] = useState(false)
   const [modalData, setModalData] = useState({
     visible: true,
     type: "log in",
@@ -93,11 +94,13 @@ export const AuthModal = ({
         if (modalData.pass.length >= 5) {
           if (await isUsernameAvailable(modalData.username)) {
             if (await isEmailAvailable(modalData.email)) {
+              if(created == false){
               const docRef = await addDoc(collection(db, "users"), {
                 username: modalData.username,
                 password: modalData.pass,
                 email: modalData.email,
               });
+              setCreated(true)
 
               setUserdata({
                 username: modalData.username,
@@ -119,6 +122,7 @@ export const AuthModal = ({
               );
 
               router.push("/home");
+              }
             } else {
               setErrMsg("Email taken");
             }

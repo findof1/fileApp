@@ -24,7 +24,7 @@ export const AuthModal = ({
   const router = useRouter();
   const [errMsg, setErrMsg] = useState("");
   const [visible, setVisible] = useState('')
-  const [created, setCreated] = useState(false)
+  const [registration, setRegistration] = useState(false)
   const [modalData, setModalData] = useState({
     visible: true,
     type: "log in",
@@ -83,8 +83,9 @@ export const AuthModal = ({
     }
   };
 
-  const handleRegister = () => {
-    setTimeout(async () => {
+  const handleRegister = async () => {
+
+
     if (
       modalData.username &&
       modalData.email &&
@@ -95,36 +96,11 @@ export const AuthModal = ({
         if (modalData.pass.length >= 5) {
           if (await isUsernameAvailable(modalData.username)) {
             if (await isEmailAvailable(modalData.email)) {
-              if(!created){
-              setCreated(true)
-              const docRef = await addDoc(collection(db, "users"), {
-                username: modalData.username,
-                password: modalData.pass,
-                email: modalData.email,
-              });
-           
-
-              setUserdata({
-                username: modalData.username,
-                password: modalData.pass,
-                email: modalData.email,
-                id: docRef.id,
-              });
-
-              sessionStorage.setItem(
-                "modalVisibility",
-                JSON.stringify({
-                  visible: false,
-                  type: "log in",
-                  username: modalData.username,
-                  email: modalData.email,
-                  pass: modalData.pass,
-                  cpass: modalData.cpass,
-                })
-              );
-
-              router.push("/home");
+              if(registration !== 'success'){
+              setRegistration('success')
               }
+
+              
             } else {
               setErrMsg("Email taken");
             }
@@ -140,7 +116,7 @@ export const AuthModal = ({
     } else {
       setErrMsg("Please fill out all fields");
     }
-  }, 2000)
+
   };
   useEffect(()=>{
   
@@ -155,6 +131,40 @@ export const AuthModal = ({
       setVisible('')
     }
   }, [])
+
+  useEffect(()=>{
+    if(registration == 'success'){
+      const createAcc = async () =>{
+      const docRef = await addDoc(collection(db, "users"), {
+        username: modalData.username,
+        password: modalData.pass,
+        email: modalData.email,
+      });
+   
+
+      setUserdata({
+        username: modalData.username,
+        password: modalData.pass,
+        email: modalData.email,
+        id: docRef.id,
+      });
+
+      sessionStorage.setItem(
+        "modalVisibility",
+        JSON.stringify({
+          visible: false,
+          type: "log in",
+          username: modalData.username,
+          email: modalData.email,
+          pass: modalData.pass,
+          cpass: modalData.cpass,
+        })
+      );
+
+      router.push("/home");}
+      createAcc()
+    }
+  }, [registration, router, modalData, addDoc])
 
   return (
     <div className={visible}>

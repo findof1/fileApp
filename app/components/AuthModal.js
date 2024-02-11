@@ -83,7 +83,8 @@ export const AuthModal = ({
     }
   };
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
+    setTimeout(async () => {
     if (
       modalData.username &&
       modalData.email &&
@@ -94,13 +95,14 @@ export const AuthModal = ({
         if (modalData.pass.length >= 5) {
           if (await isUsernameAvailable(modalData.username)) {
             if (await isEmailAvailable(modalData.email)) {
-              if(created == false){
+              if(!created){
+              setCreated(true)
               const docRef = await addDoc(collection(db, "users"), {
                 username: modalData.username,
                 password: modalData.pass,
                 email: modalData.email,
               });
-              setCreated(true)
+           
 
               setUserdata({
                 username: modalData.username,
@@ -138,6 +140,7 @@ export const AuthModal = ({
     } else {
       setErrMsg("Please fill out all fields");
     }
+  }, 2000)
   };
   useEffect(()=>{
   

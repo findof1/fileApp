@@ -70,18 +70,7 @@ const Files = () => {
 
     const filesList = filesSnapshot.docs.map(doc => doc.data());
 
-    const filesWithDataPromises = filesList.map(async (fileDoc) => {
-      const fileRef = ref(storage, `files/${fileDoc.filename}`);
-      const fileURL = await getDownloadURL(fileRef);
-      const response = await fetch(fileURL);
-      const blob = await response.blob();
-      fileDoc.fileData = blob;
-      return fileDoc;
-    });
-
-    Promise.all(filesWithDataPromises).then((updatedFilesList) => {
- 
-      setFiles(updatedFilesList);
+      setFiles(filesList);
 
       if(filesSnapshot.docs[0]){
       setFirstVisible(filesSnapshot.docs[0]);
@@ -98,10 +87,6 @@ const Files = () => {
         setEndVisible(false)
       }
      
-      
-    }).catch((error) => {
-      console.error('Error downloading file data:', error);
-    });
   },[searchText, lastVisible, firstVisible, setPage, setFiles, setFirstVisible, setEnd, setLastVisible, setEndVisible, end, page]);
 
 

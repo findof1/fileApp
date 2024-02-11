@@ -108,7 +108,7 @@ const Files = () => {
 
   useEffect(() => {
     fetchData(); 
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     console.log(page)

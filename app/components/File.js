@@ -42,7 +42,7 @@ const File = ({file, userdata}) => {
   useEffect(()=>{
     getFileData()
     
-  },[])
+  },[getFileData])
 
   useEffect(()=>{
     if(fileData.fileData){
@@ -52,7 +52,7 @@ const File = ({file, userdata}) => {
         setDataLoaded(true)
         }
     }
-  }, [fileData])
+  }, [fileData, getLikeData, setUrl, setDataLoaded])
 
   const getLikeData = () => {
     if(fileData.likes.includes(userdata.username)){

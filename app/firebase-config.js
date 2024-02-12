@@ -10,7 +10,7 @@ import {getStorage} from 'firebase/storage'
   appId: "1:622254394196:web:ace3f07cff6a4b7d85d6c1"
 };*/
 
-const backupfirebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyCACl-zvmrlMjPUbVu7zvl6haWrxP2wAtQ",
   authDomain: "file-upload-app-backup.firebaseapp.com",
   projectId: "file-upload-app-backup",
@@ -19,7 +19,7 @@ const backupfirebaseConfig = {
   appId: "1:1840165353:web:60875b3de27cc1e95b1b78"
 };
 
-const app = initializeApp(backupfirebaseConfig);
+const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app)
 export const backup = true
 export const storage = getStorage(app)

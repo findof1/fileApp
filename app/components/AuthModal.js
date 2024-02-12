@@ -333,7 +333,7 @@ export const AuthModal = ({
             Log In
           </Button>
           <p>{errMsg}</p>
-          {backup === true ? <p className="absolute z-40 bottom-0 text-2xl">Note: Backup database is enabled, if you can&apos;t log in you may have to create a new account</p> : <></>}
+          {backup === true ? <p className="absolute z-40 bottom-0 text-sm">Note: Backup database is enabled, if you can&apos;t log in you may have to create a new account</p> : <></>}
           <Button
             extraStyles="w-[25%] text-sm h-12 mt-auto self-center"
             onClick={() => {

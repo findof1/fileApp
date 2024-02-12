@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import {getFirestore} from 'firebase/firestore'
-import {getStorage} from 'firebase/storage'
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 /*const firebaseConfig = {
   apiKey: "AIzaSyDFGeKUG2ONzfIAfpffqOIcYHPW-OVhMZw",
   authDomain: "file-upload-app-c1064.firebaseapp.com",
@@ -16,10 +16,10 @@ const firebaseConfig = {
   projectId: "file-upload-app-backup",
   storageBucket: "file-upload-app-backup.appspot.com",
   messagingSenderId: "1840165353",
-  appId: "1:1840165353:web:60875b3de27cc1e95b1b78"
+  appId: "1:1840165353:web:60875b3de27cc1e95b1b78",
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app)
-export const backup = true
-export const storage = getStorage(app)
+export const db = getFirestore(app);
+export const backup = true;
+export const storage = getStorage(app);

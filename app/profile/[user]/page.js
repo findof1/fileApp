@@ -1,17 +1,18 @@
 import NavbarAuth from "@/app/components/NavbarAuth";
 import { getUserData } from "@/app/functions/getUserData";
-import File from "@/app/components/File";
+import Files from "@/app/components/Files";
 
 const page = ({ params }) => {
   const userdata = getUserData();
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full flex flex-col items-center">
       <NavbarAuth
         registerStyles="absolute top-[50%] left-[70%] text-3xl w-48"
         userdata={userdata}
       ></NavbarAuth>
-      <File file={params.file} userdata={userdata} />
+      <h1 className="text-4xl underline">{params.user}&apos;s uploads</h1>
+      <Files user={params.user}></Files>
     </div>
   );
 };

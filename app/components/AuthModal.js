@@ -5,13 +5,7 @@ import Button from "./Button";
 import TextInput from "./TextInput";
 import { useRouter } from "next/navigation";
 import { backup, db } from "../firebase-config";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  query,
-  where
-} from "firebase/firestore";
+import { collection, getDocs, addDoc, query, where } from "firebase/firestore";
 import { isUsernameAvailable } from "../functions/usernameAvalible";
 import { isEmailAvailable } from "../functions/emailAvalible";
 import { setUserdata } from "../functions/setUserData";
@@ -24,8 +18,8 @@ export const AuthModal = ({
 }) => {
   const router = useRouter();
   const [errMsg, setErrMsg] = useState("");
-  const [visible, setVisible] = useState('')
-  const [registration, setRegistration] = useState(false)
+  const [visible, setVisible] = useState("");
+  const [registration, setRegistration] = useState(false);
   const [modalData, setModalData] = useState({
     visible: true,
     type: "log in",
@@ -43,50 +37,44 @@ export const AuthModal = ({
   }, []);
 
   const handleLogin = async () => {
-    if (
-      modalData.username &&
-      modalData.email &&
-      modalData.pass 
-    ) {
-    const q = query(
-      collection(db, 'users'),
-      where('username', '==', modalData.username),
-      where('password', '==', modalData.pass),
-      where('email', '==', modalData.email)
-    );
-    const userDoc = await getDocs(q);
-    const user = userDoc.docs[0]
-    
-    if(user){
-      const data = user.data();
-      const userId = user.id;
-      data.id = userId;
-      setUserdata(data)
+    if (modalData.username && modalData.email && modalData.pass) {
+      const q = query(
+        collection(db, "users"),
+        where("username", "==", modalData.username),
+        where("password", "==", modalData.pass),
+        where("email", "==", modalData.email)
+      );
+      const userDoc = await getDocs(q);
+      const user = userDoc.docs[0];
 
-    sessionStorage.setItem(
-      "modalVisibility",
-      JSON.stringify({
-        visible: false,
-        type: "log in",
-        username: modalData.username,
-        email: modalData.email,
-        pass: modalData.pass,
-        cpass: modalData.cpass,
-      })
-    );
+      if (user) {
+        const data = user.data();
+        const userId = user.id;
+        data.id = userId;
+        setUserdata(data);
 
-    router.push("/home");
-    }else{
-      setErrMsg('User not found')
-    }
-    }else{
-      setErrMsg('Please enter in all fields')
+        sessionStorage.setItem(
+          "modalVisibility",
+          JSON.stringify({
+            visible: false,
+            type: "log in",
+            username: modalData.username,
+            email: modalData.email,
+            pass: modalData.pass,
+            cpass: modalData.cpass,
+          })
+        );
+
+        router.push("/home");
+      } else {
+        setErrMsg("User not found");
+      }
+    } else {
+      setErrMsg("Please enter in all fields");
     }
   };
 
   const handleRegister = async () => {
-
-
     if (
       modalData.username &&
       modalData.email &&
@@ -97,14 +85,13 @@ export const AuthModal = ({
         if (modalData.pass.length >= 5) {
           if (await isUsernameAvailable(modalData.username)) {
             if (await isEmailAvailable(modalData.email)) {
-              if(allowedWord(modalData.username)){
-              if(registration !== 'success'){
-              setRegistration('success')
+              if (allowedWord(modalData.username)) {
+                if (registration !== "success") {
+                  setRegistration("success");
+                }
+              } else {
+                setErrMsg("Your username cannot contain profane language");
               }
-
-            }else{
-              setErrMsg('Your username cannot contain profane language')
-            }
             } else {
               setErrMsg("Email taken");
             }
@@ -120,57 +107,53 @@ export const AuthModal = ({
     } else {
       setErrMsg("Please fill out all fields");
     }
-
   };
-  useEffect(()=>{
-  
-    if (typeof window !== 'undefined') {
-      if(window.location.pathname === '/'){
-        setVisible('')
-      }else{
-
-        setVisible('hidden')
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.location.pathname === "/") {
+        setVisible("");
+      } else {
+        setVisible("hidden");
       }
-    }else{
-      setVisible('')
+    } else {
+      setVisible("");
     }
-  }, [])
+  }, []);
 
-  useEffect(()=>{
-    if(registration == 'success'){
-      const createAcc = async () =>{
-      const docRef = await addDoc(collection(db, "users"), {
-        username: modalData.username,
-        password: modalData.pass,
-        email: modalData.email,
-      });
-   
-
-      setUserdata({
-        username: modalData.username,
-        password: modalData.pass,
-        email: modalData.email,
-        id: docRef.id,
-      });
-
-      sessionStorage.setItem(
-        "modalVisibility",
-        JSON.stringify({
-          visible: false,
-          type: "log in",
+  useEffect(() => {
+    if (registration == "success") {
+      const createAcc = async () => {
+        const docRef = await addDoc(collection(db, "users"), {
           username: modalData.username,
+          password: modalData.pass,
           email: modalData.email,
-          pass: modalData.pass,
-          cpass: modalData.cpass,
-        })
-      );
-      setTimeout(()=>{
-        router.push("/home");
-      }, 500)
-      }
-      createAcc()
+        });
+
+        setUserdata({
+          username: modalData.username,
+          password: modalData.pass,
+          email: modalData.email,
+          id: docRef.id,
+        });
+
+        sessionStorage.setItem(
+          "modalVisibility",
+          JSON.stringify({
+            visible: false,
+            type: "log in",
+            username: modalData.username,
+            email: modalData.email,
+            pass: modalData.pass,
+            cpass: modalData.cpass,
+          })
+        );
+        setTimeout(() => {
+          router.push("/home");
+        }, 500);
+      };
+      createAcc();
     }
-  }, [registration, router, modalData])
+  }, [registration, router, modalData]);
 
   return (
     <div className={visible}>
@@ -197,7 +180,7 @@ export const AuthModal = ({
               cpass: modalData.cpass,
             })
           );
-          setErrMsg('')
+          setErrMsg("");
         }}
       >
         Log In
@@ -225,7 +208,7 @@ export const AuthModal = ({
               cpass: modalData.cpass,
             })
           );
-          setErrMsg('')
+          setErrMsg("");
         }}
       >
         Register
@@ -333,7 +316,14 @@ export const AuthModal = ({
             Log In
           </Button>
           <p>{errMsg}</p>
-          {backup === true ? <p className="absolute z-40 bottom-0 text-sm">Note: Backup database is enabled, if you can&apos;t log in you may have to create a new account</p> : <></>}
+          {backup === true ? (
+            <p className="absolute z-40 bottom-0 text-sm">
+              Note: Backup database is enabled, if you can&apos;t log in you may
+              have to create a new account
+            </p>
+          ) : (
+            <></>
+          )}
           <Button
             extraStyles="w-[25%] text-sm h-12 mt-auto self-center"
             onClick={() => {

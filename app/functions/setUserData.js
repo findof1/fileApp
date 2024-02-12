@@ -1,6 +1,6 @@
-'use server'
-import { cookies } from 'next/headers'
- 
+"use server";
+import { cookies } from "next/headers";
+
 export async function setUserdata(data) {
-  cookies().set('fileApp', JSON.stringify(data))
+  cookies().set("fileApp", JSON.stringify(data));
 }

@@ -1,7 +1,7 @@
-'use server'
- 
-import { cookies } from 'next/headers'
- 
+"use server";
+
+import { cookies } from "next/headers";
+
 export async function deleteUserData() {
-  cookies().set('fileApp', undefined)
+  cookies().set("fileApp", undefined);
 }

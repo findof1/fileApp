@@ -41,7 +41,11 @@ const TextInput = ({
               placeholder={children}
               className={`${style}`}
               onChange={onChange}
-              onKeyUp={(e)=>{if(e.key == "Enter"){onEnter()}}}
+              onKeyUp={(e) => {
+                if (e.key == "Enter") {
+                  onEnter();
+                }
+              }}
               value={value}
             ></input>
           ) : (
@@ -52,7 +56,11 @@ const TextInput = ({
                 placeholder={children}
                 className={`${style}`}
                 onChange={onChange}
-                onKeyUp={(e)=>{if(e.key == "Enter"){onEnter()}}}
+                onKeyUp={(e) => {
+                  if (e.key == "Enter") {
+                    onEnter();
+                  }
+                }}
                 value={value}
               ></input>
             </div>
@@ -65,7 +73,11 @@ const TextInput = ({
               type={type}
               placeholder={children}
               className={`${style}`}
-              onKeyUp={(e)=>{if(e.key == "Enter"){onEnter()}}}
+              onKeyUp={(e) => {
+                if (e.key == "Enter") {
+                  onEnter();
+                }
+              }}
               onChange={onChange}
             ></input>
           ) : (
@@ -75,7 +87,11 @@ const TextInput = ({
                 type={type}
                 placeholder={children}
                 className={`${style}`}
-                onKeyUp={(e)=>{if(e.key == "Enter"){onEnter()}}}
+                onKeyUp={(e) => {
+                  if (e.key == "Enter") {
+                    onEnter();
+                  }
+                }}
                 onChange={onChange}
               ></input>
             </div>

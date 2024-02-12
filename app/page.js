@@ -1,6 +1,7 @@
 import NavbarAuth from "./components/NavbarAuth";
 import { getUserData } from "./functions/getUserData";
 import Button from "./components/Button";
+import { backup } from "./firebase-config";
 
 export default function Home() {
   
@@ -20,6 +21,7 @@ export default function Home() {
           This website is a place  <br></br><br></br> where you can upload your files  <br></br><br></br> to share with others, or you can search <br></br><br></br> other peoples files for yourself.
         </p>
       </div>
+      {backup ? <p className="absolute z-40 bottom-0 text-2xl">Note: Backup database is enabled, if you can't log in you may have to create a new account</p> : <></>}
     </div>
   );
 }

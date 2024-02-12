@@ -4,7 +4,7 @@ import Modal from "./Modal";
 import Button from "./Button";
 import TextInput from "./TextInput";
 import { useRouter } from "next/navigation";
-import { db } from "../firebase-config";
+import { backup, db } from "../firebase-config";
 import {
   collection,
   getDocs,
@@ -333,6 +333,7 @@ export const AuthModal = ({
             Log In
           </Button>
           <p>{errMsg}</p>
+          {backup ? <p className="absolute z-40 bottom-0 text-sm">Note: Backup database is enabled, if you can't log in you may have to create a new account</p> : <></>}
           <Button
             extraStyles="w-[25%] text-sm h-12 mt-auto self-center"
             onClick={() => {

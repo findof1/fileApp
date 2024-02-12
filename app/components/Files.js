@@ -2,8 +2,6 @@
 import { getDocs, collection, query, orderBy, limit, startAfter, endBefore, limitToLast, endAt, where } from 'firebase/firestore'
 import React, { useCallback, useEffect, useState } from 'react'
 import { db } from '../firebase-config'
-import { storage } from "../firebase-config"
-import { ref, getDownloadURL } from 'firebase/storage';
 import { FaThumbsUp } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import Button from './Button'
@@ -16,6 +14,7 @@ const Files = () => {
   const [lastVisible, setLastVisible] = useState()
   const [endVisible, setEndVisible] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [errDisp, setErrDisp] = useState()
   const [end, setEnd] = useState(false)
   const [page, setPage] = useState(1)
 
@@ -66,7 +65,9 @@ const Files = () => {
     
     }
 
-    const filesSnapshot = await getDocs(q);
+    const filesSnapshot = await getDocs(q).catch(err=>{
+      setErrDisp('Database has reached its limit for the day. Please wait until 3AM EST.')
+    });
 
     const filesList = filesSnapshot.docs.map(doc => doc.data());
 
@@ -87,7 +88,7 @@ const Files = () => {
         setEndVisible(false)
       }
      
-  },[searchText, lastVisible, firstVisible, setPage, setFiles, setFirstVisible, setEnd, setLastVisible, setEndVisible, end, page]);
+  },[searchText, lastVisible, firstVisible, setPage, setFiles, setFirstVisible, setEnd, setLastVisible, setEndVisible, end, page, setErrDisp]);
 
 
 
@@ -98,6 +99,10 @@ const Files = () => {
   useEffect(() => {
     console.log(page)
   }, [page]);
+
+  if(errDisp == 'Database has reached its limit for the day. Please wait until 3AM EST.'){
+    return(<div>{errDisp}</div>)
+  }
 
   return (
     <div className='h-[70%]  mt-[8%] w-full'>

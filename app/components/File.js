@@ -16,6 +16,7 @@ const File = ({file, userdata}) => {
   const [url, setUrl] = useState('')
   const [liked, setLiked] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
+  const [errDisp, setErrDisp] = useState()
 
   const getFileData = useCallback(async () =>{
     const q = query(
@@ -24,7 +25,9 @@ const File = ({file, userdata}) => {
       where("filename", "==", filename)
     );
 
-    const fileSnapshot = await getDocs(q);
+    const fileSnapshot = await getDocs(q).catch(err=>{
+      setErrDisp('Database has reached its limit for the day. Please wait until 3AM EST.');
+    });
     const fileDoc = fileSnapshot.docs[0].data();
     const fileRef = ref(storage, `files/${fileDoc.filename}`);
     const fileURL = await getDownloadURL(fileRef);
@@ -54,7 +57,7 @@ const File = ({file, userdata}) => {
         setDataLoaded(true)
         }
     }
-  }, [fileData, getLikeData, setUrl, setDataLoaded])
+  }, [fileData, getLikeData, setUrl, setDataLoaded, setErrDisp])
 
 
 
@@ -128,7 +131,9 @@ const File = ({file, userdata}) => {
     }
   }})
   }
-
+  if(errDisp == 'Database has reached its limit for the day. Please wait until 3AM EST.'){
+    return(<div>{errDisp}</div>)
+  }
   if(!dataLoaded){
     return <div>Loading</div>
   }

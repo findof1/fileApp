@@ -10,7 +10,7 @@ const NavbarAuth = ({ registerStyles, userdata }) => {
     <Navbar homeRedirect={!userdata ? "/" : "/home"}>
       {userdata ? (
         <>
-          <Link className="text-2xl mr-5" href={`/profiles/${userdata.username}`}>{userdata.username}</Link>
+          <Link className="text-2xl mr-5" href={`/profile/${userdata.username}`}>{userdata.username}</Link>
           <Dropdown extraStyles="self-align mt-2">
             <LogOutButton />
           </Dropdown>

@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import TextInput from './TextInput'
 import { useRouter } from 'next/navigation'
+import { allowedWord } from '../functions/allowedWord'
 
 const Uploader = ({userdata}) => {
   const [file, setFile] = useState()
@@ -31,6 +32,8 @@ const Uploader = ({userdata}) => {
       if(customName){
         if(description){
           if(customName.length < 60){
+            if(allowedWord(customName)){
+              if(allowedWord(description)){
           setUploads(uploads + 1)
     const fileRef = ref(storage, `files/${file.name + v4()}`)
     uploadBytes(fileRef, file).then(async (res)=>{
@@ -50,6 +53,12 @@ const Uploader = ({userdata}) => {
       setFile()
       router.push('/home')
     })
+  }else{
+    setErrMsg('Your description cannot contain profane language')
+  }
+  }else{
+    setErrMsg('Your name cannot contain profane language')
+  }
   }else{
     setErrMsg('Your Name Cannot Be Longer Than 60 Characters')
   }

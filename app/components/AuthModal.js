@@ -15,6 +15,7 @@ import {
 import { isUsernameAvailable } from "../functions/usernameAvalible";
 import { isEmailAvailable } from "../functions/emailAvalible";
 import { setUserdata } from "../functions/setUserData";
+import { allowedWord } from "../functions/allowedWord";
 
 export const AuthModal = ({
   registerStyles,
@@ -96,11 +97,14 @@ export const AuthModal = ({
         if (modalData.pass.length >= 5) {
           if (await isUsernameAvailable(modalData.username)) {
             if (await isEmailAvailable(modalData.email)) {
+              if(allowedWord(modalData.username)){
               if(registration !== 'success'){
               setRegistration('success')
               }
 
-              
+            }else{
+              setErrMsg('Your username cannot contain profane language')
+            }
             } else {
               setErrMsg("Email taken");
             }

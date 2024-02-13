@@ -110,30 +110,32 @@ const Files = ({ user = null }) => {
         }
       }
 
-      const filesSnapshot = await getDocs(q).catch((err) => {
+      const filesSnapshot = await getDocs(q).then(()=>{
+        const filesList = filesSnapshot.docs.map((doc) => doc.data());
+
+        setFiles(filesList);
+  
+        if (filesSnapshot.docs[0]) {
+          setFirstVisible(filesSnapshot.docs[0]);
+          setEnd(false);
+        } else {
+          setFirstVisible(lastVisible);
+          setEnd(true);
+        }
+  
+        setLastVisible(filesSnapshot.docs[filesSnapshot.docs.length - 1]);
+        if (filesSnapshot.docs.length < 12) {
+          setEndVisible(true);
+        } else {
+          setEndVisible(false);
+        }
+      }).catch((err) => {
         setErrDisp(
           "Database has reached its limit for the day. Please wait until 3AM EST."
         );
       });
 
-      const filesList = filesSnapshot.docs.map((doc) => doc.data());
-
-      setFiles(filesList);
-
-      if (filesSnapshot.docs[0]) {
-        setFirstVisible(filesSnapshot.docs[0]);
-        setEnd(false);
-      } else {
-        setFirstVisible(lastVisible);
-        setEnd(true);
-      }
-
-      setLastVisible(filesSnapshot.docs[filesSnapshot.docs.length - 1]);
-      if (filesSnapshot.docs.length < 12) {
-        setEndVisible(true);
-      } else {
-        setEndVisible(false);
-      }
+      
     },
     [
       searchText,

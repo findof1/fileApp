@@ -110,7 +110,8 @@ const Files = ({ user = null }) => {
         }
       }
 
-      const filesSnapshot = await getDocs(q).then(()=>{
+      await getDocs(q).then((res)=>{
+        const filesSnapshot = res
         const filesList = filesSnapshot.docs.map((doc) => doc.data());
 
         setFiles(filesList);
@@ -133,6 +134,7 @@ const Files = ({ user = null }) => {
         setErrDisp(
           "Database has reached its limit for the day. Please wait until 3AM EST."
         );
+        console.log(err)
       });
 
       

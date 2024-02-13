@@ -47,9 +47,11 @@ const File = ({ file, userdata }) => {
   }, [file, filename, setFileData]);
 
   const getLikeData = useCallback(() => {
+    if(userdata){
     if (fileData.likes.includes(userdata.username)) {
       setLiked(true);
     }
+  }
   }, [setLiked, userdata, fileData]);
 
   useEffect(() => {

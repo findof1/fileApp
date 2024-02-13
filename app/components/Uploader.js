@@ -22,7 +22,7 @@ const Uploader = ({ userdata }) => {
   const [errMsg, setErrMsg] = useState("");
   const router = useRouter();
 
-  const saveFile = () => {
+  const saveFile = async () => {
     if (uploads > 0) {
       setErrMsg("No Spamming Uploads");
     } else {
@@ -32,7 +32,7 @@ const Uploader = ({ userdata }) => {
             if (customName.length < 60) {
               if (allowedWord(customName)) {
                 if (allowedWord(description)) {
-                  if(validateUser(userdata)){
+                  if(await validateUser(userdata)){
                   setUploads(uploads + 1);
                   const fileRef = ref(storage, `files/${file.name + v4()}`);
                   uploadBytes(fileRef, file).then(async (res) => {

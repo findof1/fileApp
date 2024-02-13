@@ -67,7 +67,7 @@ const File = ({ file, userdata }) => {
   }, [fileData, getLikeData, setUrl, setDataLoaded, setErrDisp]);
 
   const like = async () => {
-    if(validateUser(userdata)){
+    if(await validateUser(userdata)){
     const q = query(
       collection(db, "files"),
       where("name", "==", decodeURIComponent(file)),
@@ -122,13 +122,13 @@ const File = ({ file, userdata }) => {
       where("filename", "==", filename)
     );
 
-    getDocs(q).then((querySnapshot) => {
+    getDocs(q).then(async (querySnapshot) => {
       if (!querySnapshot.empty) {
         const docSnapshot = querySnapshot.docs[0];
         const docRef = docSnapshot.ref;
 
         if (!fileData.downloads.includes(userdata.username)) {
-          if(validateUser(userdata)){
+          if(await validateUser(userdata)){
           const newDownloads = [...fileData.downloads, userdata.username];
 
           updateDoc(docRef, {

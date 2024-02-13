@@ -1,5 +1,6 @@
 "use server";
-
+import { query, collection, where, getDocs } from "firebase/firestore";
+import { db } from "../firebase-config";
 import { deleteUserData } from "./deleteUserData";
 
 export const validateUser = async ({userdata}) => {

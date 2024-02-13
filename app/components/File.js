@@ -9,13 +9,12 @@ import {
   where,
   getDocs,
   updateDoc,
-  getDoc,
-  doc,
 } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { FaThumbsUp } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import Button from "./Button";
+import { validateUser } from "../functions/validateUser";
 
 const File = ({ file, userdata }) => {
   const searchParams = useSearchParams();
@@ -68,6 +67,7 @@ const File = ({ file, userdata }) => {
   }, [fileData, getLikeData, setUrl, setDataLoaded, setErrDisp]);
 
   const like = async () => {
+    if(validateUser(userdata)){
     const q = query(
       collection(db, "files"),
       where("name", "==", decodeURIComponent(file)),
@@ -112,6 +112,7 @@ const File = ({ file, userdata }) => {
         }
       }
     });
+  }
   };
 
   const download = () => {
@@ -127,6 +128,7 @@ const File = ({ file, userdata }) => {
         const docRef = docSnapshot.ref;
 
         if (!fileData.downloads.includes(userdata.username)) {
+          if(validateUser(userdata)){
           const newDownloads = [...fileData.downloads, userdata.username];
 
           updateDoc(docRef, {
@@ -139,6 +141,7 @@ const File = ({ file, userdata }) => {
             .catch((error) => {
               console.error(error);
             });
+          }
         }
       }
     });

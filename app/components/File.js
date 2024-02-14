@@ -19,8 +19,8 @@ import { validateUser } from "../functions/validateUser";
 
 const File = ({ file, userdata }) => {
   const searchParams = useSearchParams();
-  const router = useRouter()
-  const [isAdminOrOwner, setIsAdminOrOwner] = useState(false)
+  const router = useRouter();
+  const [isAdminOrOwner, setIsAdminOrOwner] = useState(false);
   const filename = searchParams.get("id");
   const [fileData, setFileData] = useState({});
   const [fileRef, setFileRef] = useState();
@@ -31,7 +31,6 @@ const File = ({ file, userdata }) => {
   const [errDisp, setErrDisp] = useState();
 
   const getFileData = useCallback(async () => {
-
     const q = query(
       collection(db, "files"),
       where("name", "==", decodeURIComponent(file)),
@@ -44,9 +43,9 @@ const File = ({ file, userdata }) => {
       );
     });
     const fileDoc = fileSnapshot.docs[0]?.data();
-    setFileRef(fileSnapshot.docs[0]?.ref)
+    setFileRef(fileSnapshot.docs[0]?.ref);
     const fileRef = ref(storage, `files/${fileDoc?.filename}`);
-    setStorageRef(fileRef)
+    setStorageRef(fileRef);
     const fileURL = await getDownloadURL(fileRef);
     const response = await fetch(fileURL);
     const blob = await response.blob();
@@ -55,34 +54,33 @@ const File = ({ file, userdata }) => {
   }, [file, filename, setFileData, setFileRef, setStorageRef]);
 
   const deleteFile = async () => {
-    if(await validateUser(userdata)){
-    deleteDoc(fileRef).then(()=>{
-      deleteObject(storageRef).then(()=>{
-        router.push('/home')
-      })
-    })
-    
+    if (await validateUser(userdata)) {
+      deleteDoc(fileRef).then(() => {
+        deleteObject(storageRef).then(() => {
+          router.push("/home");
+        });
+      });
     }
-  }
+  };
 
   const getLikeData = useCallback(() => {
-    if(userdata){
-    if (fileData.likes.includes(userdata.username)) {
-      setLiked(true);
+    if (userdata) {
+      if (fileData.likes.includes(userdata.username)) {
+        setLiked(true);
+      }
     }
-  }
   }, [setLiked, userdata, fileData]);
 
   useEffect(() => {
     const checkPermission = async () => {
       const isAdmin = await validateUser(userdata);
 
-      setIsAdminOrOwner(isAdmin === 'admin');
+      setIsAdminOrOwner(isAdmin === "admin");
     };
 
     checkPermission();
     getFileData();
-  }, [getFileData, setIsAdminOrOwner]);
+  }, [getFileData, userdata]);
 
   useEffect(() => {
     if (fileData.fileData) {
@@ -95,59 +93,54 @@ const File = ({ file, userdata }) => {
   }, [fileData, getLikeData, setUrl, setDataLoaded, setErrDisp]);
 
   const like = async () => {
-    if(await validateUser(userdata)){
-    const q = query(
-      collection(db, "files"),
-      where("name", "==", decodeURIComponent(file)),
-      where("filename", "==", filename)
-    );
+    if (await validateUser(userdata)) {
+      const q = query(
+        collection(db, "files"),
+        where("name", "==", decodeURIComponent(file)),
+        where("filename", "==", filename)
+      );
 
-    useEffect(() => {
+      getDocs(q).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const docSnapshot = querySnapshot.docs[0];
+          const docRef = docSnapshot.ref;
 
-    }, [setIsAdminOrOwner]);
+          if (!fileData.likes.includes(userdata.username)) {
+            const newLikes = [...fileData.likes, userdata.username];
 
-    getDocs(q).then((querySnapshot) => {
-      if (!querySnapshot.empty) {
-        const docSnapshot = querySnapshot.docs[0];
-        const docRef = docSnapshot.ref;
-
-        if (!fileData.likes.includes(userdata.username)) {
-          const newLikes = [...fileData.likes, userdata.username];
-
-          updateDoc(docRef, {
-            likes: newLikes,
-            likeCount: fileData.likeCount + 1,
-          })
-            .then(() => {
-              getFileData();
-              setLiked(true);
+            updateDoc(docRef, {
+              likes: newLikes,
+              likeCount: fileData.likeCount + 1,
             })
-            .catch((error) => {
-              console.error(error);
-            });
-        } else {
-          const newLikes = fileData.likes.filter(
-            (like) => like !== userdata.username
-          );
+              .then(() => {
+                getFileData();
+                setLiked(true);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          } else {
+            const newLikes = fileData.likes.filter(
+              (like) => like !== userdata.username
+            );
 
-          updateDoc(docRef, {
-            likes: newLikes,
-            likeCount: fileData.likeCount - 1,
-          })
-            .then(() => {
-              setLiked(false);
-              getFileData();
+            updateDoc(docRef, {
+              likes: newLikes,
+              likeCount: fileData.likeCount - 1,
             })
-            .catch((error) => {
-              console.error(error);
-            });
+              .then(() => {
+                setLiked(false);
+                getFileData();
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
         }
-      }
-    });
-  }
+      });
+    }
   };
 
-  
   const download = () => {
     const q = query(
       collection(db, "files"),
@@ -161,19 +154,19 @@ const File = ({ file, userdata }) => {
         const docRef = docSnapshot.ref;
 
         if (!fileData.downloads.includes(userdata.username)) {
-          if(await validateUser(userdata)){
-          const newDownloads = [...fileData.downloads, userdata.username];
+          if (await validateUser(userdata)) {
+            const newDownloads = [...fileData.downloads, userdata.username];
 
-          updateDoc(docRef, {
-            downloads: newDownloads,
-            downloadCount: fileData.downloadCount + 1,
-          })
-            .then(() => {
-              getFileData();
+            updateDoc(docRef, {
+              downloads: newDownloads,
+              downloadCount: fileData.downloadCount + 1,
             })
-            .catch((error) => {
-              console.error(error);
-            });
+              .then(() => {
+                getFileData();
+              })
+              .catch((error) => {
+                console.error(error);
+              });
           }
         }
       }
@@ -190,7 +183,17 @@ const File = ({ file, userdata }) => {
   }
   return (
     <div className="h-[75%] w-full flex flex-col items-center">
-      {fileData.user === userdata?.username || isAdminOrOwner ? <Button style="deny" extraStyles="absolute left-[5%] top-[15%] w-32 p-2 text-xl" onClick={deleteFile}>Delete File</Button> : <></>}
+      {fileData.user === userdata?.username || isAdminOrOwner ? (
+        <Button
+          style="deny"
+          extraStyles="absolute left-[5%] top-[15%] w-32 p-2 text-xl"
+          onClick={deleteFile}
+        >
+          Delete File
+        </Button>
+      ) : (
+        <></>
+      )}
       <h1
         className={`${
           fileData.name?.length < 20

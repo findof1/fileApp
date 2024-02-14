@@ -110,34 +110,34 @@ const Files = ({ user = null }) => {
         }
       }
 
-      await getDocs(q).then((res)=>{
-        const filesSnapshot = res
-        const filesList = filesSnapshot.docs.map((doc) => doc.data());
+      await getDocs(q)
+        .then((res) => {
+          const filesSnapshot = res;
+          const filesList = filesSnapshot.docs.map((doc) => doc.data());
 
-        setFiles(filesList);
-  
-        if (filesSnapshot.docs[0]) {
-          setFirstVisible(filesSnapshot.docs[0]);
-          setEnd(false);
-        } else {
-          setFirstVisible(lastVisible);
-          setEnd(true);
-        }
-  
-        setLastVisible(filesSnapshot.docs[filesSnapshot.docs.length - 1]);
-        if (filesSnapshot.docs.length < 12) {
-          setEndVisible(true);
-        } else {
-          setEndVisible(false);
-        }
-      }).catch((err) => {
-        setErrDisp(
-          "Database has reached its limit for the day. Please wait until 3AM EST."
-        );
-        console.log(err)
-      });
+          setFiles(filesList);
 
-      
+          if (filesSnapshot.docs[0]) {
+            setFirstVisible(filesSnapshot.docs[0]);
+            setEnd(false);
+          } else {
+            setFirstVisible(lastVisible);
+            setEnd(true);
+          }
+
+          setLastVisible(filesSnapshot.docs[filesSnapshot.docs.length - 1]);
+          if (filesSnapshot.docs.length < 12) {
+            setEndVisible(true);
+          } else {
+            setEndVisible(false);
+          }
+        })
+        .catch((err) => {
+          setErrDisp(
+            "Database has reached its limit for the day. Please wait until 3AM EST."
+          );
+          console.log(err);
+        });
     },
     [
       searchText,
@@ -152,6 +152,7 @@ const Files = ({ user = null }) => {
       end,
       page,
       setErrDisp,
+      user,
     ]
   );
 

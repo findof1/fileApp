@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { db } from "../firebase-config";
 import { storage } from "../firebase-config";
 import {
@@ -9,8 +9,9 @@ import {
   where,
   getDocs,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
-import { getDownloadURL, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { FaThumbsUp } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import Button from "./Button";
@@ -18,14 +19,19 @@ import { validateUser } from "../functions/validateUser";
 
 const File = ({ file, userdata }) => {
   const searchParams = useSearchParams();
+  const router = useRouter()
+  const [isAdminOrOwner, setIsAdminOrOwner] = useState(false)
   const filename = searchParams.get("id");
   const [fileData, setFileData] = useState({});
+  const [fileRef, setFileRef] = useState();
+  const [storageRef, setStorageRef] = useState();
   const [url, setUrl] = useState("");
   const [liked, setLiked] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [errDisp, setErrDisp] = useState();
 
   const getFileData = useCallback(async () => {
+
     const q = query(
       collection(db, "files"),
       where("name", "==", decodeURIComponent(file)),
@@ -37,14 +43,27 @@ const File = ({ file, userdata }) => {
         "Database has reached its limit for the day. Please wait until 3AM EST."
       );
     });
-    const fileDoc = fileSnapshot.docs[0].data();
-    const fileRef = ref(storage, `files/${fileDoc.filename}`);
+    const fileDoc = fileSnapshot.docs[0]?.data();
+    setFileRef(fileSnapshot.docs[0]?.ref)
+    const fileRef = ref(storage, `files/${fileDoc?.filename}`);
+    setStorageRef(fileRef)
     const fileURL = await getDownloadURL(fileRef);
     const response = await fetch(fileURL);
     const blob = await response.blob();
     fileDoc.fileData = blob;
     setFileData(fileDoc);
-  }, [file, filename, setFileData]);
+  }, [file, filename, setFileData, setFileRef, setStorageRef]);
+
+  const deleteFile = async () => {
+    if(await validateUser(userdata)){
+    deleteDoc(fileRef).then(()=>{
+      deleteObject(storageRef).then(()=>{
+        router.push('/home')
+      })
+    })
+    
+    }
+  }
 
   const getLikeData = useCallback(() => {
     if(userdata){
@@ -55,8 +74,15 @@ const File = ({ file, userdata }) => {
   }, [setLiked, userdata, fileData]);
 
   useEffect(() => {
+    const checkPermission = async () => {
+      const isAdmin = await validateUser(userdata);
+
+      setIsAdminOrOwner(isAdmin === 'admin');
+    };
+
+    checkPermission();
     getFileData();
-  }, [getFileData]);
+  }, [getFileData, setIsAdminOrOwner]);
 
   useEffect(() => {
     if (fileData.fileData) {
@@ -75,6 +101,10 @@ const File = ({ file, userdata }) => {
       where("name", "==", decodeURIComponent(file)),
       where("filename", "==", filename)
     );
+
+    useEffect(() => {
+
+    }, [setIsAdminOrOwner]);
 
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
@@ -117,6 +147,7 @@ const File = ({ file, userdata }) => {
   }
   };
 
+  
   const download = () => {
     const q = query(
       collection(db, "files"),
@@ -159,6 +190,7 @@ const File = ({ file, userdata }) => {
   }
   return (
     <div className="h-[75%] w-full flex flex-col items-center">
+      {fileData.user === userdata?.username || isAdminOrOwner ? <Button style="deny" extraStyles="absolute left-[5%] top-[15%] w-32 p-2 text-xl" onClick={deleteFile}>Delete File</Button> : <></>}
       <h1
         className={`${
           fileData.name?.length < 20

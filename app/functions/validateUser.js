@@ -19,9 +19,20 @@ export const validateUser = async (userdata) => {
 
   const userDoc = await getDocs(q);
   const user = userDoc.docs[0];
-
+  const name = user.data().username
+  
   if (user) {
+    if(name == userdata.username){
+      if(name == 'admin'){
+
+        return 'admin'
+      }
+      
     return true;
+    }else{
+      deleteUserData()
+      return false;
+    }
   } else {
     deleteUserData();
     return false;
